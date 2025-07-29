@@ -27,6 +27,11 @@ app.use(compress({
 }))
 ```
 
+## Maintainers
+
+- Lead: @jonathanong [@jongleberry](https://twitter.com/jongleberry)
+- Team: @koajs/compress
+
 ## Options
 
 ### filter\<Function\>
@@ -56,12 +61,13 @@ It can be a function that returns options (see below).
 #### options<span></span>.br
 
 [Brotli compression](https://en.wikipedia.org/wiki/Brotli) is supported in node v11.7.0+, which includes it natively.
+As of v5.1.0, the default quality level is 4 for performance reasons.
 
 ### options.defaultEncoding\<String\>
 
 An optional string, which specifies what encoders to use for requests without
 [Accept-Encoding](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding).
-Default `idenity`.
+Default `identity`.
 
 The standard dictates to treat such requests as `*` meaning that all compressions are permissible,
 yet it causes very practical problems when debugging servers with manual tools like `curl`, `wget`, and so on.
