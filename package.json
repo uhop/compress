@@ -47,5 +47,18 @@
   "main": "lib",
   "engines": {
     "node": ">= 12"
+  },
+  "standard": {
+    "globals": [
+      "afterAll",
+      "beforeAll",
+      "afterEach",
+      "jasmine",
+      "describe",
+      "test",
+      "jest",
+      "expect",
+      "it"
+    ]
   }
 }
