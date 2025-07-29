@@ -24,8 +24,9 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
-    - run: npm run eslint
-    - run: npm run test
-    # codecov is completely deprecated
-    # - run: npm run test -- --coverage
-    # - run: npx codecov
+    - run: npm run lint
+    - run: npm run test:coverage
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
