@@ -1,4 +1,3 @@
-
 const assert = require('assert')
 
 const Encodings = require('../lib/encodings')
