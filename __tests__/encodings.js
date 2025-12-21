@@ -1,16 +1,18 @@
 const assert = require('assert')
+const zlib = require('zlib')
 
 const Encodings = require('../lib/encodings')
 
 describe('parseAcceptEncoding', () => {
   const fixtures = [
     {
-      input: 'br, gzip, compress, deflate',
+      input: 'zstd, br, gzip, compress, deflate',
       output: {
         br: 1,
         gzip: 1,
         compress: 1,
         deflate: 1,
+        zstd: 1,
         identity: undefined
       }
     },
@@ -21,6 +23,7 @@ describe('parseAcceptEncoding', () => {
         gzip: 0.1,
         compress: undefined,
         deflate: 0.1,
+        zstd: undefined,
         identity: undefined
       }
     },
@@ -31,6 +34,7 @@ describe('parseAcceptEncoding', () => {
         gzip: 0,
         compress: undefined,
         deflate: 1,
+        zstd: undefined,
         identity: undefined
       }
     },
@@ -41,6 +45,7 @@ describe('parseAcceptEncoding', () => {
         gzip: undefined,
         compress: undefined,
         deflate: undefined,
+        zstd: undefined,
         identity: 1
       }
     },
@@ -51,7 +56,19 @@ describe('parseAcceptEncoding', () => {
         gzip: 0.8,
         compress: undefined,
         deflate: 0.3,
+        zstd: undefined,
         identity: 0.5
+      }
+    },
+    {
+      input: 'zstd;q=0.9, br;q=0.8',
+      output: {
+        br: 0.8,
+        gzip: undefined,
+        compress: undefined,
+        deflate: undefined,
+        zstd: 0.9,
+        identity: undefined
       }
     }
   ]
@@ -72,6 +89,8 @@ describe('parseAcceptEncoding', () => {
 })
 
 describe('getPreferredContentEncoding', () => {
+  const zstdAvailable = typeof zlib.createZstdCompress === 'function'
+
   const fixtures = [
     {
       acceptEncoding: 'gzip, br',
@@ -98,7 +117,26 @@ describe('getPreferredContentEncoding', () => {
     {
       acceptEncoding: 'identity',
       preferredEncoding: 'identity'
-    }
+    },
+    ...(
+      zstdAvailable
+        ? [
+            {
+              acceptEncoding: 'zstd, gzip',
+              preferredEncoding: 'zstd'
+            },
+            {
+              acceptEncoding: 'deflate, zstd',
+              preferredEncoding: 'zstd'
+            },
+            {
+              name: 'zstd with higher priority than br',
+              acceptEncoding: 'zstd, br',
+              preferredEncoding: 'zstd'
+            }
+          ]
+        : []
+    )
   ]
 
   fixtures.forEach((fixture) => {
