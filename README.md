@@ -8,26 +8,28 @@ Compress middleware for Koa
 ## Example
 
 ```js
-const compress = require('koa-compress')
-const Koa = require('koa')
+const compress = require("koa-compress");
+const Koa = require("koa");
 
-const app = new Koa()
-app.use(compress({
-  filter (content_type) {
-  	return /text/i.test(content_type)
-  },
-  threshold: 2048,
-  gzip: {
-    flush: require('zlib').constants.Z_SYNC_FLUSH
-  },
-  deflate: {
-    flush: require('zlib').constants.Z_SYNC_FLUSH,
-  },
-  zstd: {
-    flush: require('zlib').constants.Z_SYNC_FLUSH
-  },
-  br: false // disable brotli
-}))
+const app = new Koa();
+app.use(
+  compress({
+    filter(content_type) {
+      return /text/i.test(content_type);
+    },
+    threshold: 2048,
+    gzip: {
+      flush: require("zlib").constants.Z_SYNC_FLUSH,
+    },
+    deflate: {
+      flush: require("zlib").constants.Z_SYNC_FLUSH,
+    },
+    zstd: {
+      flush: require("zlib").constants.Z_SYNC_FLUSH,
+    },
+    br: false, // disable brotli
+  }),
+);
 ```
 
 ## Maintainers
@@ -61,7 +63,7 @@ Setting `options[encoding] = false` will disable that encoding.
 
 It can be a function that returns options (see below).
 
-#### options<span></span>.br
+#### options.br
 
 [Brotli compression](https://en.wikipedia.org/wiki/Brotli) is supported in node v11.7.0+, which includes it natively.
 As of v5.1.0, the default quality level is 4 for performance reasons.
@@ -88,9 +90,9 @@ This bypasses the filter check.
 
 ```js
 app.use((ctx, next) => {
-  ctx.compress = true
-  ctx.body = fs.createReadStream(file)
-})
+  ctx.compress = true;
+  ctx.body = fs.createReadStream(file);
+});
 ```
 
 `ctx.compress` can be an object similar to `options` above, whose properties (`threshold` and encoding options)
@@ -101,9 +103,9 @@ override the global `options` for this response and bypass the filter check.
 Certain properties (`threshold` and encoding options) can be specified as functions. Such functions will be called
 for every response with three arguments:
 
-* `type` &mdash; the same as `ctx.response.type` (provided for convenience)
-* `size` &mdash; the same as `ctx.response.length` (provided for convenience)
-* `ctx` &mdash; the whole context object, if you want to do something unique
+- `type` &mdash; the same as `ctx.response.type` (provided for convenience)
+- `size` &mdash; the same as `ctx.response.length` (provided for convenience)
+- `ctx` &mdash; the whole context object, if you want to do something unique
 
 It should return a valid value for that property. It is possible to return a function of the same shape,
 which will be used to calculate the actual property.
@@ -114,11 +116,11 @@ Example:
 app.use((ctx, next) => {
   // ...
   ctx.compress = (type, size, ctx) => ({
-    br:   size && size >= 65536,
-    gzip: size && size <  65536
-  })
-  ctx.body = payload
-})
+    br: size && size >= 65536,
+    gzip: size && size < 65536,
+  });
+  ctx.body = payload;
+});
 ```
 
 Read all about `ctx` in https://koajs.com/#context and `ctx.response` in https://koajs.com/#response
